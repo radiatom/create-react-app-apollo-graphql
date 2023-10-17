@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, Card, CloseButton, Container, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { editTask, openTask } from "../../redux/appSlice";
+import { editTask, } from "../../redux/appSlice";
 import edit from "./../../assets/edit.png";
 import { useMutation } from "@apollo/client";
 import { DELETE_TODO } from "../../mutation/doto";

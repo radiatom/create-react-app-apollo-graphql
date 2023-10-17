@@ -60,7 +60,8 @@ function App() {
                     setOpenModalEditTask={setOpenModalEditTask}
                     setIdTaskInModal={setIdTaskInModal}
                 />
-                {openModalEditTask && <ModalWindow fnOpen={setOpenModalEditTask} id={idTaskInModal} action={actionEditTask} />}
+                {openModalEditTask && <ModalWindow fnOpen={setOpenModalEditTask} id={idTaskInModal} action={actionEditTask} setIdTaskInModal={setIdTaskInModal}/>}
+                {openModalNewTask && <ModalWindow fnOpen={setOpenModalNewTask} id={idTaskInModal} action={actionEditTask} setIdTaskInModal={setIdTaskInModal}/>}
             </Container>
         </div>
     );

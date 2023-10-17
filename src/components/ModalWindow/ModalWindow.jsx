@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { useDispatch } from "react-redux";
-import { openTask } from "../../redux/appSlice";
 import { useQuery } from "@apollo/client";
 import { GET_TODO } from "../../query/todo";
 
-const ModalWindow = ({ fnOpen, action, id }) => {
+const ModalWindow = ({ fnOpen, action, id,setIdTaskInModal }) => {
     const [task, setTask] = useState({});
     const { data, loading } = useQuery(GET_TODO, {
         variables: {
@@ -15,16 +13,16 @@ const ModalWindow = ({ fnOpen, action, id }) => {
         },
     });
     useEffect(() => {
-        if (!loading) {
+        if (!loading&&id!==0) {
             setTask(data.todo);
         }
     }, [data]);
-    const dispatch = useDispatch();
     const [erorr, setErorr] = useState(false);
 
     const close = () => {
         fnOpen(false);
-        dispatch(openTask({ id: 0 }));
+        setTask({})
+        setIdTaskInModal(0)
     };
     const changeTitle = (event) => {
         setTask({ ...task, title: event.target.value });
