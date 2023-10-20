@@ -1,19 +1,16 @@
 import Container from "react-bootstrap/Container";
 import "./App.scss";
-import { useSelector } from "react-redux";
-import { completedTasksSelector, notCompletedTasksSelector, taskSelector } from "./selectorsApp";
 import { useEffect, useState } from "react";
 import TasksList from "./components/TasksList/TasksList";
 import NavBar from "./components/NavBar/NavBar";
 import ModalWindow from "./components/ModalWindow/ModalWindow";
-import { addTask, editTask } from "./redux/appSlice";
 import { useQuery } from "@apollo/client";
-import { GET_TODOS } from "./query/dotos";
+import { GET_TODOS } from "./apollo/query/AllTodos";
 
 function App() {
     const [completedTasksList, setCompletedTasksList] = useState([]);
     const [notCompletedTasksList, setNotCompletedTasksList] = useState([]);
-    const { loading, error, data, refetch } = useQuery(GET_TODOS);
+    const { loading, error, data } = useQuery(GET_TODOS);
     const [idTaskInModal, setIdTaskInModal] = useState(0);
 
     const [nameList, setNameList] = useState("notCompletedTasksList");
@@ -24,9 +21,9 @@ function App() {
 
     useEffect(() => {
         if (!loading) {
-            const completedTasks = data.todos.data.filter((item) => item.completed === true);
+            const completedTasks = data.allTodos.filter((item) => item.completed === true);
             setCompletedTasksList(completedTasks);
-            const notCompletedTasks = data.todos.data.filter((item) => item.completed === false);
+            const notCompletedTasks = data.allTodos.filter((item) => item.completed === false);
             setNotCompletedTasksList(notCompletedTasks);
         }
     }, [data]);
@@ -39,20 +36,12 @@ function App() {
         }
     }, [nameList, completedTasksList, notCompletedTasksList]);
 
-    const actionAddNewTask = (task) => {
-        // dispatch(addTask({ ...task }));
-    };
-    const actionEditTask = (task) => {
-        // dispatch(editTask({ ...task }));
-    };
-
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error : {error.message}</p>;
 
     return (
         <div className="App">
             <NavBar setNameList={setNameList} setOpenModalNewTask={setOpenModalNewTask} />
-            <button onClick={() => refetch()}>refetch</button>
             <Container>
                 <TasksList
                     nameOpenList={nameOpenList}
@@ -60,8 +49,8 @@ function App() {
                     setOpenModalEditTask={setOpenModalEditTask}
                     setIdTaskInModal={setIdTaskInModal}
                 />
-                {openModalEditTask && <ModalWindow fnOpen={setOpenModalEditTask} id={idTaskInModal} action={actionEditTask} setIdTaskInModal={setIdTaskInModal}/>}
-                {openModalNewTask && <ModalWindow fnOpen={setOpenModalNewTask} id={idTaskInModal} action={actionEditTask} setIdTaskInModal={setIdTaskInModal}/>}
+                {openModalEditTask && <ModalWindow fnOpen={setOpenModalEditTask} id={idTaskInModal} />}
+                {openModalNewTask && <ModalWindow fnOpen={setOpenModalNewTask} />}
             </Container>
         </div>
     );

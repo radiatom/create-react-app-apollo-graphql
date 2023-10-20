@@ -1,29 +1,23 @@
-import React, { useEffect } from "react";
+import React, {} from "react";
 import { Button, Card, CloseButton, Container, Row } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { editTask, } from "../../redux/appSlice";
 import edit from "./../../assets/edit.png";
 import { useMutation } from "@apollo/client";
-import { DELETE_TODO } from "../../mutation/doto";
+import { DELETE_TODO, UPDATE_COMPLITED } from "../../apollo/mutation/todo";
+import { GET_TODOS } from "../../apollo/query/AllTodos";
 
-const TasksList = ({ nameOpenList, list, setOpenModalEditTask,setIdTaskInModal }) => {
-    
-    const dispatch = useDispatch();
+const TasksList = ({ nameOpenList, list, setOpenModalEditTask, setIdTaskInModal }) => {
     const openModalEditTask = (id) => {
         setOpenModalEditTask(true);
-        setIdTaskInModal(id)
+        setIdTaskInModal(id);
     };
 
-    const [deleteTodo] = useMutation(DELETE_TODO);
-    const deleteTask = (id) => {
-        deleteTodo({
-            variables: {
-                id: id,
-            },
-        }).then(({ data }) => {
-            console.log(data);
-        });
-    };
+    const [deleteTodo] = useMutation(DELETE_TODO, {
+        refetchQueries: [GET_TODOS],
+    });
+    const [updateComplited] = useMutation(UPDATE_COMPLITED, {
+        refetchQueries: [GET_TODOS],
+    });
+    
     return (
         <>
             <h3 className="mt-1">{nameOpenList}:</h3>
@@ -39,19 +33,25 @@ const TasksList = ({ nameOpenList, list, setOpenModalEditTask,setIdTaskInModal }
                                     alt="edit"
                                     onClick={() => openModalEditTask(item.id)}
                                 />
-                                <CloseButton className="m-1" onClick={() => deleteTask(item.id)} />
+                                <CloseButton className="m-1" onClick={() => deleteTodo({ variables: { id: item.id } })} />
                             </Container>
                             <Card.Body>
                                 <Card.Title>{item.title}</Card.Title>
                                 <Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
-                                <Card.Text>Якийсь опис</Card.Text>
+                                <Card.Text>{item.description}</Card.Text>
                                 <Card.Text>{item.completed ? "Виконане" : "Не виконане"}</Card.Text>
                                 {item.completed ? (
-                                    <Button variant="danger" onClick={() => dispatch(editTask({ ...item, completed: false }))}>
+                                    <Button
+                                        variant="danger"
+                                        onClick={() => updateComplited({ variables: { id: item.id, completed: false } })}
+                                    >
                                         Позничити як не виконане
                                     </Button>
                                 ) : (
-                                    <Button variant="success" onClick={() => dispatch(editTask({ ...item, completed: true }))}>
+                                    <Button
+                                        variant="success"
+                                        onClick={() => updateComplited({ variables: { id: item.id, completed: true } })}
+                                    >
                                         Позничити як виконане
                                     </Button>
                                 )}

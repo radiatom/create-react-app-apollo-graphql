@@ -12,11 +12,7 @@ module.exports = {
     //     { id: 995, post_id: 1, body: "Nam molestie pellentesque dui", date: new Date('2017-08-17') }
     // ]
     todos: [
-        { id: 1, title: "Lorem Ipsum", user_id: 123, completed: false },
-        { id: 2, title: "Sic Dolor amet", user_id: 456, completed: true },
-    ],
-    users: [
-        { id: 123, name: "John Doe" },
-        { id: 456, name: "Jane Doe" }
-    ],
+        { id: 1, title: "Lorem Ipsum",  description:"якись текст", completed: false },
+        { id: 2, title: "Sic Dolor amet",  description:"якись текст", completed: true },
+    ]
 }
